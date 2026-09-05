@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\CartItem;
+use App\Models\Product;
+use App\Models\Promo;
+use Illuminate\Http\Request;
+
+class CartController extends Controller
+{
+    public function index()
+    {
+        $user = auth()->user();
+        $cartItems = CartItem::with('product')->where('user_id', $user->id)->get();
+        $subtotal = $cartItems->sum(fn ($item) => $item->product->price * $item->quantity);
+
+        $appliedPromo = null;
+        $discount = 0;
+        $promoError = null;
+
+        $appliedCode = session('applied_promo_code');
+        if ($appliedCode) {
+            $promo = Promo::where('code', $appliedCode)->first();
+            if ($promo && $promo->isValidNow()) {
+                $err = null;
+                if ($promo->isEligible($subtotal, $user, $err)) {
+                    $appliedPromo = $promo;
+                    $discount = $promo->calculateDiscount($subtotal, 0);
+                } else {
+                    $promoError = $err;
+                }
+            } else {
+                session()->forget('applied_promo_code');
+            }
+        }
+
+        $availablePromos = Promo::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('start_date')->orWhere('start_date', '<=', now()->toDateString());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')->orWhere('end_date', '>=', now()->toDateString());
+            })
+            ->get();
+
+        $total = max(0, $subtotal - $discount);
+
+        return view('cart', compact('cartItems', 'subtotal', 'total', 'appliedPromo', 'discount', 'promoError', 'availablePromos'));
+    }
+
+    public function add(Request $request, Product $product)
+    {
+        $cartItem = CartItem::where('user_id', auth()->id())
+            ->where('product_id', $product->id)
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->increment('quantity');
+        } else {
+            CartItem::create([
+                'user_id' => auth()->id(),
+                'product_id' => $product->id,
+                'quantity' => 1,
+            ]);
+        }
+
+        return back()->with('success', $product->name . ' ditambahkan ke keranjang.');
+    }
+
+    public function increase(CartItem $cartItem)
+    {
+        $this->authorizeCartItem($cartItem);
+
+        $cartItem->increment('quantity');
+
+        return back();
+    }
+
+    public function decrease(CartItem $cartItem)
+    {
+        $this->authorizeCartItem($cartItem);
+
+        if ($cartItem->quantity <= 1) {
+            $cartItem->delete();
+        } else {
+            $cartItem->decrement('quantity');
+        }
+
+        return back();
+    }
+
+    public function remove(CartItem $cartItem)
+    {
+        $this->authorizeCartItem($cartItem);
+
+        $cartItem->delete();
+
+        return back()->with('success', 'Item dihapus dari keranjang.');
+    }
+
+    private function authorizeCartItem(CartItem $cartItem): void
+    {
+        if ($cartItem->user_id !== auth()->id()) {
+            abort(403);
+        }
+    }
+}
