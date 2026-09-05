@@ -19,6 +19,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
+                $storeStatus = \Illuminate\Support\Facades\Cache::rememberForever('store_status', function () {
+                    return \App\Models\Setting::firstOrCreate(['key' => 'store_status'], ['value' => 'online'])->value;
+                });
+                \Illuminate\Support\Facades\View::share('store_status', $storeStatus);
+            }
+        } catch (\Exception $e) {
+            // Ignore during setup
+        }
     }
 }

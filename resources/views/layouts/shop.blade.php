@@ -367,5 +367,23 @@
         }
     </script>
 
+    @if(isset($store_status) && $store_status === 'offline')
+    <div id="storeOfflineModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in-down">
+        <div class="absolute inset-0 bg-gray-900/80 backdrop-blur-sm"></div>
+        <div class="relative bg-white dark:bg-gray-900 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-orange-500/30 text-center">
+            <div class="w-20 h-20 bg-orange-100 dark:bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
+                <span class="text-4xl">🌙</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-3">Toko Sedang Tutup</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                Maaf, saat ini WarungBuKarno sedang istirahat. Silakan kembali lagi besok untuk menikmati hidangan lezat kami ya!
+            </p>
+            <button onclick="document.getElementById('storeOfflineModal').remove()" class="w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-bold shadow-lg shadow-orange-500/30 transition-all transform hover:scale-[1.02]">
+                Baik, Mengerti
+            </button>
+        </div>
+    </div>
+    @endif
+
 </body>
 </html>

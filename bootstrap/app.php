@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\TrustProxies::class);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'store.status' => \App\Http\Middleware\CheckStoreStatus::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             '/api/midtrans/callback',

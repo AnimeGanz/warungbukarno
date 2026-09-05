@@ -30,13 +30,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/{product}', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/{product}', [\App\Http\Controllers\CartController::class, 'add'])->middleware('store.status')->name('cart.add');
     Route::patch('/cart/{cartItem}/increase', [\App\Http\Controllers\CartController::class, 'increase'])->name('cart.increase');
     Route::patch('/cart/{cartItem}/decrease', [\App\Http\Controllers\CartController::class, 'decrease'])->name('cart.decrease');
     Route::delete('/cart/{cartItem}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 
-    Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->middleware('store.status')->name('checkout.index');
+    Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'store'])->middleware('store.status')->name('checkout.store');
 
     Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [\App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
 // Area khusus admin - dilindungi middleware 'admin'
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/store-status/toggle', [\App\Http\Controllers\Admin\DashboardController::class, 'toggleStoreStatus'])->name('store-status.toggle');
 
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'edit', 'show']);

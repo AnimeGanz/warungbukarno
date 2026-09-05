@@ -86,4 +86,19 @@ class DashboardController extends Controller
             'promosSummary'
         ));
     }
+
+    public function toggleStoreStatus()
+    {
+        $setting = \App\Models\Setting::firstOrCreate(
+            ['key' => 'store_status'],
+            ['value' => 'online']
+        );
+
+        $newStatus = $setting->value === 'online' ? 'offline' : 'online';
+        $setting->update(['value' => $newStatus]);
+
+        \Illuminate\Support\Facades\Cache::forever('store_status', $newStatus);
+
+        return redirect()->back()->with('success', 'Status toko berhasil diubah menjadi ' . strtoupper($newStatus));
+    }
 }

@@ -40,6 +40,21 @@
                     </svg>
                     <span>Buat Promo</span>
                 </a>
+
+                <form action="{{ route('admin.store-status.toggle') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" 
+                        class="px-4 py-2.5 rounded-xl border {{ $store_status === 'online' ? 'bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 hover:bg-rose-500/20 text-rose-400' }} text-xs font-semibold transition flex items-center gap-1.5"
+                        onclick="return confirm('Anda yakin ingin mengubah status toko?')">
+                        @if($store_status === 'online')
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>Toko Buka (Tutup)</span>
+                        @else
+                            <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                            <span>Toko Tutup (Buka)</span>
+                        @endif
+                    </button>
+                </form>
             </div>
         </div>
     </div>
