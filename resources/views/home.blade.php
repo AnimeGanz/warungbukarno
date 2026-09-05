@@ -16,9 +16,14 @@
         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-transparent to-transparent"></div>
 
         <div class="relative z-10 max-w-7xl mx-auto px-6 py-24 md:py-32 flex flex-col items-start justify-center min-h-[500px]">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/20 border border-orange-500/30 backdrop-blur-md mb-6">
-                <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                <span class="text-orange-300 text-xs font-bold tracking-wider uppercase">Buka • Siap Antar</span>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full {{ isset($store_status) && $store_status === 'offline' ? 'bg-rose-500/20 border-rose-500/30' : 'bg-orange-500/20 border-orange-500/30' }} backdrop-blur-md mb-6">
+                @if(isset($store_status) && $store_status === 'offline')
+                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                    <span class="text-rose-300 text-xs font-bold tracking-wider uppercase">Tutup • Sedang Istirahat</span>
+                @else
+                    <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                    <span class="text-orange-300 text-xs font-bold tracking-wider uppercase">Buka • Siap Antar</span>
+                @endif
             </div>
             
             <h1 class="text-4xl md:text-6xl font-black leading-tight text-white mb-6 max-w-2xl">
