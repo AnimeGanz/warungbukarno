@@ -99,7 +99,7 @@
                 <h3 class="text-xl font-black text-gray-900 dark:text-white mb-1">Punya Pertanyaan atau Pesanan Khusus?</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Tim kami siap melayani dan menjawab pertanyaanmu setiap hari.</p>
             </div>
-            <a href="https://wa.me/6281234567890" target="_blank" class="flex-shrink-0 bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg shadow-green-500/20">
+            <a href="https://wa.me/6285654757016" target="_blank" class="flex-shrink-0 bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg shadow-green-500/20">
                 <span>💬</span> Hubungi via WhatsApp
             </a>
         </div>
