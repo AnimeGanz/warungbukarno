@@ -21,7 +21,7 @@
                 @csrf
                 <label for="avatarInputTop" class="cursor-pointer relative group block w-20 h-20 shadow-xl shadow-black/20 rounded-full border-4 border-gray-800 hover:border-orange-500 transition-colors duration-300">
                     @if (auth()->user()->avatar)
-                        <img src="{{ Storage::url(auth()->user()->avatar) }}" class="w-full h-full rounded-full object-cover">
+                        <img src="{{ Storage::disk('s3')->url(auth()->user()->avatar) }}" class="w-full h-full rounded-full object-cover">
                     @else
                         <div class="w-full h-full rounded-full bg-gradient-to-br from-orange-400 to-amber-600 flex items-center justify-center text-white text-2xl font-black">
                             {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
@@ -65,7 +65,7 @@
                         @csrf
                         <label for="avatarInputMobile" class="cursor-pointer relative group block w-24 h-24 shadow-md rounded-full border-4 border-white mb-4 ring-2 ring-orange-100 hover:ring-orange-400 transition-colors">
                             @if (auth()->user()->avatar)
-                                <img src="{{ Storage::url(auth()->user()->avatar) }}" class="w-full h-full rounded-full object-cover">
+                                <img src="{{ Storage::disk('s3')->url(auth()->user()->avatar) }}" class="w-full h-full rounded-full object-cover">
                             @else
                                 <div class="w-full h-full rounded-full bg-gradient-to-br from-orange-400 to-amber-600 flex items-center justify-center text-white text-3xl font-black">
                                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
