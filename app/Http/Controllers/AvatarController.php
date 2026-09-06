@@ -16,10 +16,10 @@ class AvatarController extends Controller
         $user = auth()->user();
 
         if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
+            Storage::disk('s3')->delete($user->avatar);
         }
 
-        $path = $request->file('avatar')->store('avatars', 'public');
+        $path = $request->file('avatar')->store('avatars', 's3');
 
         $user->update(['avatar' => $path]);
 
