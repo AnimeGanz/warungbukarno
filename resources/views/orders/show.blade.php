@@ -40,13 +40,13 @@
                     {{-- Garis Background --}}
                     <div class="absolute left-0 top-5 -translate-y-1/2 w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full z-0"></div>
                     
-                    {{-- Garis Progress --}}
+                    {{-- Garis Progress (3 steps: 0%, 50%, 100%) --}}
                     <div class="absolute left-0 top-5 -translate-y-1/2 h-1.5 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full z-0 transition-all duration-1000 ease-in-out" 
-                         style="width: {{ $order->status === 'menunggu' ? '0%' : ($order->status === 'diproses' ? '33%' : ($order->status === 'dikirim' ? '66%' : '100%')) }};">
+                         style="width: {{ $order->status === 'menunggu' ? '0%' : (in_array($order->status, ['diproses', 'dikirim']) ? '50%' : '100%') }};">
                     </div>
                     
                     {{-- Step 1 --}}
-                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-16 group">
+                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-20 group">
                         <div class="w-10 h-10 rounded-full {{ in_array($order->status, ['menunggu', 'diproses', 'dikirim', 'selesai']) ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-500/40 ring-4 ring-orange-50 dark:ring-orange-900/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700' }} flex items-center justify-center text-lg transition-all duration-500 group-hover:scale-110">
                             📋
                         </div>
@@ -54,23 +54,15 @@
                     </div>
                     
                     {{-- Step 2 --}}
-                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-16 group">
+                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-24 group">
                         <div class="w-10 h-10 rounded-full {{ in_array($order->status, ['diproses', 'dikirim', 'selesai']) ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-500/40 ring-4 ring-orange-50 dark:ring-orange-900/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700' }} flex items-center justify-center text-lg transition-all duration-500 group-hover:scale-110">
-                            👩‍🍳
+                            {{ $order->delivery_method === 'delivery' ? '🛵' : '🍳' }}
                         </div>
-                        <span class="text-[10px] sm:text-xs font-bold {{ in_array($order->status, ['diproses', 'dikirim', 'selesai']) ? 'text-orange-600 dark:text-orange-500' : 'text-gray-500 dark:text-gray-400' }} text-center leading-tight">Sedang<br>Dimasak</span>
+                        <span class="text-[10px] sm:text-xs font-bold {{ in_array($order->status, ['diproses', 'dikirim', 'selesai']) ? 'text-orange-600 dark:text-orange-500' : 'text-gray-500 dark:text-gray-400' }} text-center leading-tight">{{ $order->delivery_method === 'delivery' ? 'Diproses &' : 'Sedang' }}<br>{{ $order->delivery_method === 'delivery' ? 'Diantar' : 'Dimasak' }}</span>
                     </div>
                     
                     {{-- Step 3 --}}
-                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-16 group">
-                        <div class="w-10 h-10 rounded-full {{ in_array($order->status, ['dikirim', 'selesai']) ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-500/40 ring-4 ring-orange-50 dark:ring-orange-900/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700' }} flex items-center justify-center text-lg transition-all duration-500 group-hover:scale-110">
-                            {{ $order->delivery_method === 'delivery' ? '🛵' : '🏪' }}
-                        </div>
-                        <span class="text-[10px] sm:text-xs font-bold {{ in_array($order->status, ['dikirim', 'selesai']) ? 'text-orange-600 dark:text-orange-500' : 'text-gray-500 dark:text-gray-400' }} text-center leading-tight">{{ $order->delivery_method === 'delivery' ? 'Sedang' : 'Siap' }}<br>{{ $order->delivery_method === 'delivery' ? 'Diantar' : 'Diambil' }}</span>
-                    </div>
-                    
-                    {{-- Step 4 --}}
-                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-16 group">
+                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-20 group">
                         <div class="w-10 h-10 rounded-full {{ $order->status === 'selesai' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-500/40 ring-4 ring-emerald-50 dark:ring-emerald-900/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700' }} flex items-center justify-center text-lg transition-all duration-500 group-hover:scale-110">
                             ✅
                         </div>
@@ -87,16 +79,13 @@
                             <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesanan Sedang Menunggu Pembayaran 💳</p>
                             <p class="text-xs text-orange-600 dark:text-orange-500">Kami akan segera memproses pesananmu setelah pembayaran berhasil dikonfirmasi.</p>
                         @endif
-                    @elseif ($order->status === 'diproses')
-                        <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesananmu Sedang Disiapkan! 🍳</p>
-                        <p class="text-xs text-orange-600 dark:text-orange-500">Koki kami sedang memasak pesananmu dengan sepenuh hati.</p>
-                    @elseif ($order->status === 'dikirim')
+                    @elseif (in_array($order->status, ['diproses', 'dikirim']))
                         @if ($order->delivery_method === 'delivery')
-                            <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Kurir Sedang Otw! 🛵💨</p>
-                            <p class="text-xs text-orange-600 dark:text-orange-500">Siap-siap ya, makanan enak pesananmu segera tiba di depan pintu.</p>
+                            <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesanan Sedang Diproses & Diantar! 🛵💨</p>
+                            <p class="text-xs text-orange-600 dark:text-orange-500">Koki sudah menyiapkan makananmu, dan kurir sedang dalam perjalanan menuju lokasimu.</p>
                         @else
-                            <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesanan Siap Diambil! 🏪</p>
-                            <p class="text-xs text-orange-600 dark:text-orange-500">Silakan datang ke Warung Bu Karno dan tunjukkan nomor pesanan ini.</p>
+                            <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesanan Sedang Dimasak! 🍳</p>
+                            <p class="text-xs text-orange-600 dark:text-orange-500">Koki kami sedang memasak pesananmu. Tunggu sebentar lagi ya sampai pesanan siap diambil.</p>
                         @endif
                     @elseif ($order->status === 'selesai')
                         <p class="text-sm font-bold text-emerald-800 dark:text-emerald-400 mb-1">Pesanan Selesai! 🎉</p>

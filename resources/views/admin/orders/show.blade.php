@@ -117,9 +117,8 @@
 
                     <select name="status"
                             class="w-full bg-white/[0.02] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400">
-                        <option value="menunggu" class="bg-[#161922]" {{ $order->status === 'menunggu' ? 'selected' : '' }}>Menunggu</option>
-                        <option value="diproses" class="bg-[#161922]" {{ $order->status === 'diproses' ? 'selected' : '' }}>Diproses</option>
-                        <option value="dikirim" class="bg-[#161922]" {{ $order->status === 'dikirim' ? 'selected' : '' }}>Dikirim</option>
+                        <option value="menunggu" class="bg-[#161922]" {{ $order->status === 'menunggu' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
+                        <option value="diproses" class="bg-[#161922]" {{ in_array($order->status, ['diproses', 'dikirim']) ? 'selected' : '' }}>Diproses & Dikirim</option>
                         <option value="selesai" class="bg-[#161922]" {{ $order->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
                         <option value="dibatalkan" class="bg-[#161922]" {{ $order->status === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                     </select>
