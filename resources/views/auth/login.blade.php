@@ -14,10 +14,15 @@
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased selection:bg-orange-500 selection:text-white">
 
-    <div class="min-h-screen flex">
+    <div class="min-h-screen flex relative lg:static p-4 lg:p-0 items-center justify-center lg:items-stretch">
+        {{-- Mobile Background (Tampil di HP) --}}
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600"
+             alt="Background"
+             class="absolute inset-0 w-full h-full object-cover lg:hidden z-0">
+        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm lg:hidden z-0"></div>
 
         {{-- Left Hero / Branding Panel (Desktop) --}}
-        <div class="hidden lg:flex lg:w-1/2 relative bg-gray-950 overflow-hidden flex-col justify-between p-12 text-white">
+        <div class="hidden lg:flex lg:w-1/2 relative bg-gray-950 overflow-hidden flex-col justify-between p-12 text-white z-10">
             {{-- Background Image with Gradient Overlay --}}
             <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600"
                  alt="Kuliner WarungBuKarno"
@@ -85,7 +90,7 @@
         </div>
 
         {{-- Right Form Panel --}}
-        <div class="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-12 md:p-16 bg-white relative">
+        <div class="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-10 bg-white/95 lg:bg-white backdrop-blur-xl lg:backdrop-blur-none relative z-10 rounded-3xl lg:rounded-none shadow-2xl lg:shadow-none mx-auto max-w-md lg:max-w-none min-h-[calc(100vh-2rem)] lg:min-h-screen">
 
             {{-- Top Navbar / Back Button --}}
             <div class="flex items-center justify-between mb-8">
