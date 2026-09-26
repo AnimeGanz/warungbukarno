@@ -52,6 +52,9 @@ class HomeController extends Controller
             }
         }
 
-        return view('home', compact('categories', 'products', 'promos', 'totalProducts', 'averageRating', 'satisfactionText'));
+        $store_latitude = \App\Models\Setting::where('key', 'store_latitude')->value('value') ?? '-6.200000';
+        $store_longitude = \App\Models\Setting::where('key', 'store_longitude')->value('value') ?? '106.816666';
+
+        return view('home', compact('categories', 'products', 'promos', 'totalProducts', 'averageRating', 'satisfactionText', 'store_latitude', 'store_longitude'));
     }
 }

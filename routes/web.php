@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::post('/store-status/toggle', [\App\Http\Controllers\Admin\DashboardController::class, 'toggleStoreStatus'])->name('store-status.toggle');
+    Route::post('/store-location', [\App\Http\Controllers\Admin\DashboardController::class, 'updateStoreLocation'])->name('store-location.update');
 
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'edit', 'show']);

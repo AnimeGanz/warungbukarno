@@ -76,6 +76,9 @@ class DashboardController extends Controller
                     ->orderByDesc('used_count')
                     ->take(3)
                     ->get(),
+
+                'store_latitude' => \App\Models\Setting::where('key', 'store_latitude')->value('value') ?? '-6.200000',
+                'store_longitude' => \App\Models\Setting::where('key', 'store_longitude')->value('value') ?? '106.816666',
             ];
         });
 
@@ -95,5 +98,27 @@ class DashboardController extends Controller
         \Illuminate\Support\Facades\Cache::forever('store_status', $newStatus);
 
         return redirect()->back()->with('success', 'Status toko berhasil diubah menjadi ' . strtoupper($newStatus));
+    }
+
+    public function updateStoreLocation(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'store_latitude' => 'required|numeric',
+            'store_longitude' => 'required|numeric',
+        ]);
+
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'store_latitude'],
+            ['value' => $request->store_latitude]
+        );
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'store_longitude'],
+            ['value' => $request->store_longitude]
+        );
+
+        // Clear cache so dashboard uses new values
+        \Illuminate\Support\Facades\Cache::forget('admin_dashboard_data');
+
+        return redirect()->back()->with('success', 'Koordinat toko berhasil diperbarui!');
     }
 }

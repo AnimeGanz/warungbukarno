@@ -570,9 +570,9 @@
             
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    // Koordinat Default Warung Bu Karno (Misal di Pusat Kota Jakarta)
-                    const warungLat = -6.200000;
-                    const warungLon = 106.816666;
+                    // Koordinat Toko dari Database
+                    const warungLat = {{ $store_latitude }};
+                    const warungLon = {{ $store_longitude }};
                     
                     const userLat = position.coords.latitude;
                     const userLon = position.coords.longitude;

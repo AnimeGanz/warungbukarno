@@ -41,6 +41,12 @@
                     <span>Buat Promo</span>
                 </a>
 
+                <button onclick="document.getElementById('locationModal').classList.remove('hidden')"
+                   class="px-4 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-white text-xs font-semibold transition flex items-center gap-1.5">
+                    <span>📍</span>
+                    <span>Atur Lokasi Toko</span>
+                </button>
+
                 <form action="{{ route('admin.store-status.toggle') }}" method="POST" class="inline">
                     @csrf
                     <button type="submit" 
@@ -371,5 +377,38 @@
             });
         });
     </script>
+
+    {{-- Modal Atur Lokasi --}}
+    <div id="locationModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50 px-4">
+        <div class="bg-[#171C28] rounded-3xl w-full max-w-md shadow-2xl border border-white/[0.08] p-6 relative">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white">📍 Atur Koordinat Toko</h3>
+                <button onclick="document.getElementById('locationModal').classList.add('hidden')" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form action="{{ route('admin.store-location.update') }}" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Latitude</label>
+                    <input type="text" name="store_latitude" value="{{ $store_latitude }}" class="w-full bg-[#131722] border border-white/[0.08] rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" required placeholder="-6.200000">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Longitude</label>
+                    <input type="text" name="store_longitude" value="{{ $store_longitude }}" class="w-full bg-[#131722] border border-white/[0.08] rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" required placeholder="106.816666">
+                </div>
+                
+                <p class="text-[10px] text-gray-500 bg-white/[0.02] p-3 rounded-lg">
+                    Tips: Anda bisa mendapatkan nilai Latitude dan Longitude ini dari Google Maps. Klik kanan pada lokasi toko Anda di maps, lalu copy angka koordinatnya.
+                </p>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="document.getElementById('locationModal').classList.add('hidden')" class="flex-1 px-4 py-2.5 rounded-xl border border-white/10 text-gray-300 font-bold hover:bg-white/[0.02]">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 shadow-lg shadow-orange-500/20">Simpan Lokasi</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 @endsection
