@@ -25,6 +25,82 @@
             <p class="text-xs text-gray-500 dark:text-gray-400">{{ $order->created_at->translatedFormat('d M Y, H:i') }} WIB</p>
         </div>
 
+        {{-- Order Status Tracker --}}
+        <div class="bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-2xl p-6 mb-4 shadow-sm overflow-hidden relative">
+            @if ($order->status === 'dibatalkan')
+                <div class="text-center py-4">
+                    <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">❌</div>
+                    <h3 class="font-bold text-gray-800 dark:text-white text-base">Pesanan Dibatalkan</h3>
+                    <p class="text-xs text-gray-500 mt-1">Mohon maaf, pesanan ini tidak dapat dilanjutkan.</p>
+                </div>
+            @else
+                <h3 class="font-bold text-gray-800 dark:text-white text-sm mb-8 text-center sm:text-left">Status Pesanan Saat Ini</h3>
+                
+                <div class="relative flex justify-between items-center w-full max-w-xl mx-auto px-2">
+                    {{-- Garis Background --}}
+                    <div class="absolute left-0 top-5 -translate-y-1/2 w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full z-0"></div>
+                    
+                    {{-- Garis Progress --}}
+                    <div class="absolute left-0 top-5 -translate-y-1/2 h-1.5 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full z-0 transition-all duration-1000 ease-in-out" 
+                         style="width: {{ $order->status === 'menunggu' ? '0%' : ($order->status === 'diproses' ? '33%' : ($order->status === 'dikirim' ? '66%' : '100%')) }};">
+                    </div>
+                    
+                    {{-- Step 1 --}}
+                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-16 group">
+                        <div class="w-10 h-10 rounded-full {{ in_array($order->status, ['menunggu', 'diproses', 'dikirim', 'selesai']) ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-500/40 ring-4 ring-orange-50 dark:ring-orange-900/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700' }} flex items-center justify-center text-lg transition-all duration-500 group-hover:scale-110">
+                            📋
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold {{ in_array($order->status, ['menunggu', 'diproses', 'dikirim', 'selesai']) ? 'text-orange-600 dark:text-orange-500' : 'text-gray-500 dark:text-gray-400' }} text-center leading-tight">Menunggu</span>
+                    </div>
+                    
+                    {{-- Step 2 --}}
+                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-16 group">
+                        <div class="w-10 h-10 rounded-full {{ in_array($order->status, ['diproses', 'dikirim', 'selesai']) ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-500/40 ring-4 ring-orange-50 dark:ring-orange-900/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700' }} flex items-center justify-center text-lg transition-all duration-500 group-hover:scale-110">
+                            👩‍🍳
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold {{ in_array($order->status, ['diproses', 'dikirim', 'selesai']) ? 'text-orange-600 dark:text-orange-500' : 'text-gray-500 dark:text-gray-400' }} text-center leading-tight">Sedang<br>Dimasak</span>
+                    </div>
+                    
+                    {{-- Step 3 --}}
+                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-16 group">
+                        <div class="w-10 h-10 rounded-full {{ in_array($order->status, ['dikirim', 'selesai']) ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-500/40 ring-4 ring-orange-50 dark:ring-orange-900/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700' }} flex items-center justify-center text-lg transition-all duration-500 group-hover:scale-110">
+                            {{ $order->delivery_method === 'delivery' ? '🛵' : '🏪' }}
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold {{ in_array($order->status, ['dikirim', 'selesai']) ? 'text-orange-600 dark:text-orange-500' : 'text-gray-500 dark:text-gray-400' }} text-center leading-tight">{{ $order->delivery_method === 'delivery' ? 'Sedang' : 'Siap' }}<br>{{ $order->delivery_method === 'delivery' ? 'Diantar' : 'Diambil' }}</span>
+                    </div>
+                    
+                    {{-- Step 4 --}}
+                    <div class="relative z-10 flex flex-col items-center gap-2.5 w-16 group">
+                        <div class="w-10 h-10 rounded-full {{ $order->status === 'selesai' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-500/40 ring-4 ring-emerald-50 dark:ring-emerald-900/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700' }} flex items-center justify-center text-lg transition-all duration-500 group-hover:scale-110">
+                            ✅
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold {{ $order->status === 'selesai' ? 'text-emerald-600 dark:text-emerald-500' : 'text-gray-500 dark:text-gray-400' }} text-center leading-tight">Pesanan<br>Selesai</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-4 sm:p-5 rounded-2xl {{ $order->status === 'selesai' ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/50' : 'bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-800/50' }} text-center border shadow-inner">
+                    @if ($order->status === 'menunggu')
+                        <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesanan Sedang Menunggu Konfirmasi</p>
+                        <p class="text-xs text-orange-600 dark:text-orange-500">Kami akan segera memproses pesananmu setelah pembayaran terkonfirmasi.</p>
+                    @elseif ($order->status === 'diproses')
+                        <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesananmu Sedang Disiapkan! 🍳</p>
+                        <p class="text-xs text-orange-600 dark:text-orange-500">Koki kami sedang memasak pesananmu dengan sepenuh hati.</p>
+                    @elseif ($order->status === 'dikirim')
+                        @if ($order->delivery_method === 'delivery')
+                            <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Kurir Sedang Otw! 🛵💨</p>
+                            <p class="text-xs text-orange-600 dark:text-orange-500">Siap-siap ya, makanan enak pesananmu segera tiba di depan pintu.</p>
+                        @else
+                            <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesanan Siap Diambil! 🏪</p>
+                            <p class="text-xs text-orange-600 dark:text-orange-500">Silakan datang ke Warung Bu Karno dan tunjukkan nomor pesanan ini.</p>
+                        @endif
+                    @elseif ($order->status === 'selesai')
+                        <p class="text-sm font-bold text-emerald-800 dark:text-emerald-400 mb-1">Pesanan Selesai! 🎉</p>
+                        <p class="text-xs text-emerald-600 dark:text-emerald-500">Terima kasih sudah jajan di WarungBuKarno. Jangan lupa beri ulasan ya! ❤️</p>
+                    @endif
+                </div>
+            @endif
+        </div>
+
         <div class="bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-2xl p-6 mb-4 shadow-sm">
             <h3 class="font-bold text-gray-800 dark:text-white text-sm mb-4">Item Pesanan</h3>
             <div class="divide-y dark:divide-gray-800">

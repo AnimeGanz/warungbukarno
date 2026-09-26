@@ -56,6 +56,9 @@ class CheckoutController extends Controller
             })
             ->get();
 
+        $store_latitude = \App\Models\Setting::where('key', 'store_latitude')->value('value') ?? '-6.200000';
+        $store_longitude = \App\Models\Setting::where('key', 'store_longitude')->value('value') ?? '106.816666';
+
         return view('checkout', [
             'cartItems' => $cartItems,
             'subtotal' => $subtotal,
@@ -64,6 +67,8 @@ class CheckoutController extends Controller
             'discount' => $discount,
             'promoError' => $promoError,
             'availablePromos' => $availablePromos,
+            'store_latitude' => $store_latitude,
+            'store_longitude' => $store_longitude,
         ]);
     }
 
@@ -86,7 +91,11 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index');
         }
 
+        $subtotal = $cartItems->sum(fn ($item) => $item->product->price * $item->quantity);
 
+        if ($validated['delivery_method'] === 'delivery' && $subtotal < 20000) {
+            return back()->withErrors(['delivery_method' => 'Minimal pesanan Rp 20.000 untuk menggunakan jasa pengiriman (Antar ke Rumah).'])->withInput();
+        }
 
         if (in_array($validated['payment_method'], ['bank_transfer', 'ewallet'])) {
             if (empty(config('midtrans.server_key'))) {
@@ -94,8 +103,7 @@ class CheckoutController extends Controller
             }
         }
 
-        $order = DB::transaction(function () use ($validated, $cartItems, $request, $user) {
-            $subtotal = $cartItems->sum(fn ($item) => $item->product->price * $item->quantity);
+        $order = DB::transaction(function () use ($validated, $cartItems, $request, $user, $subtotal) {
             $shippingCost = $validated['delivery_method'] === 'delivery' ? $this->shippingCost : 0;
 
             // Promo validation and calculation

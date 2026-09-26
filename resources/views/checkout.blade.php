@@ -102,8 +102,14 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-5">
-                                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">Alamat Lengkap Pengiriman</label>
+                                <div class="mb-5 relative">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-2 gap-2">
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Alamat Lengkap Pengiriman</label>
+                                        <button type="button" onclick="getLocation()" class="text-xs font-bold text-orange-500 hover:text-orange-600 flex items-center gap-1.5 bg-orange-50 dark:bg-orange-900/20 px-3 py-1.5 rounded-lg transition self-start sm:self-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
+                                            <span id="btnLocationText">Gunakan Lokasi Saat Ini (GPS)</span>
+                                        </button>
+                                    </div>
                                     <textarea name="shipping_address" id="shipping_address" rows="3" placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan..."
                                               class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:text-white rounded-xl px-4 py-3 text-sm focus:bg-white dark:focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition">{{ old('shipping_address') }}</textarea>
                                 </div>
@@ -130,21 +136,28 @@
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                     {{-- Opsi 1: Delivery --}}
-                                    <label class="group relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-5 cursor-pointer transition-all hover:border-orange-300 dark:hover:border-orange-500/50 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/30 dark:has-[:checked]:bg-orange-900/10 has-[:checked]:shadow-md">
-                                        <input type="radio" name="delivery_method" value="delivery" checked onchange="updateSummary()" class="absolute top-5 right-5 text-orange-500 focus:ring-orange-400 w-5 h-5">
-                                        <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-4 transition-transform group-hover:scale-105">
+                                    <label class="group relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-5 {{ $subtotal >= 20000 ? 'cursor-pointer transition-all hover:border-orange-300 dark:hover:border-orange-500/50 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/30 dark:has-[:checked]:bg-orange-900/10 has-[:checked]:shadow-md' : 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-gray-800/80' }}">
+                                        <input type="radio" name="delivery_method" value="delivery" {{ $subtotal >= 20000 ? 'checked' : 'disabled' }} onchange="updateSummary()" class="absolute top-5 right-5 text-orange-500 focus:ring-orange-400 w-5 h-5">
+                                        <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-4 transition-transform {{ $subtotal >= 20000 ? 'group-hover:scale-105' : '' }}">
                                             <span class="text-2xl">🛵</span>
                                         </div>
                                         <p class="text-base font-bold text-gray-900 dark:text-white mb-1">Antar ke Rumah</p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed min-h-[3rem]">Kurir kami akan mengantar pesanan langsung ke depan pintumu.</p>
-                                        <div class="mt-4 inline-block bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-3 py-1 rounded-lg text-xs font-bold">
-                                            Biaya: Rp {{ number_format($shippingCost, 0, ',', '.') }}
-                                        </div>
+                                        
+                                        @if ($subtotal < 20000)
+                                            <div class="mt-4 inline-block bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 px-3 py-1 rounded-lg text-xs font-bold">
+                                                Minimal pesanan Rp 20.000
+                                            </div>
+                                        @else
+                                            <div class="mt-4 inline-block bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-3 py-1 rounded-lg text-xs font-bold">
+                                                Biaya: Rp {{ number_format($shippingCost, 0, ',', '.') }}
+                                            </div>
+                                        @endif
                                     </label>
 
                                     {{-- Opsi 2: Pickup --}}
                                     <label class="group relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-5 cursor-pointer transition-all hover:border-orange-300 dark:hover:border-orange-500/50 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/30 dark:has-[:checked]:bg-orange-900/10 has-[:checked]:shadow-md">
-                                        <input type="radio" name="delivery_method" value="pickup" onchange="updateSummary()" class="absolute top-5 right-5 text-orange-500 focus:ring-orange-400 w-5 h-5">
+                                        <input type="radio" name="delivery_method" value="pickup" {{ $subtotal < 20000 ? 'checked' : '' }} onchange="updateSummary()" class="absolute top-5 right-5 text-orange-500 focus:ring-orange-400 w-5 h-5">
                                         <div class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4 transition-transform group-hover:scale-105">
                                             <span class="text-2xl">🏪</span>
                                         </div>
@@ -163,8 +176,8 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold text-gray-800 dark:text-gray-200">Estimasi Pesanan Selesai / Sampai</p>
-                                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Sekitar 20 - 35 menit setelah konfirmasi pembayaran</p>
+                                        <p class="text-xs font-bold text-gray-800 dark:text-gray-200">Estimasi Waktu Sampai / Pesanan Siap</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5" id="checkoutDeliveryTimeText">Menghitung estimasi...</p>
                                     </div>
                                 </div>
                             </div>
@@ -502,6 +515,11 @@
             }
             
             document.getElementById('totalText').textContent = formatRupiah(total);
+            
+            // Panggil ulang estimasi (apabila diubah dari delivery ke pickup atau sebaliknya)
+            if (typeof calculateDeliveryTimeForCheckout === 'function') {
+                calculateDeliveryTimeForCheckout();
+            }
         }
 
 
@@ -661,7 +679,88 @@
             .catch(() => location.reload());
         }
 
+        function getLocation() {
+            if (navigator.geolocation) {
+                const btnText = document.getElementById('btnLocationText');
+                const originalText = btnText.innerText;
+                btnText.innerText = 'Mencari lokasi...';
+                
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                        const data = await response.json();
+                        if (data && data.display_name) {
+                            document.getElementById('shipping_address').value = data.display_name;
+                        } else {
+                            alert("Alamat spesifik tidak ditemukan. Silakan lengkapi manual.");
+                        }
+                    } catch (error) {
+                        alert("Gagal mengambil alamat dari server. Silakan ketik manual.");
+                    }
+                    btnText.innerText = originalText;
+                }, (error) => {
+                    alert("Akses lokasi ditolak atau tidak tersedia. Pastikan GPS aktif dan izinkan browser mengakses lokasi.");
+                    btnText.innerText = originalText;
+                });
+            } else {
+                alert("Browser Anda tidak mendukung fitur lokasi.");
+            }
+        }
+
+        function calculateDeliveryTimeForCheckout() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const method = document.querySelector('input[name="delivery_method"]:checked')?.value;
+                        const textEl = document.getElementById('checkoutDeliveryTimeText');
+                        if (!textEl) return;
+                        
+                        if (method === 'pickup') {
+                            textEl.textContent = 'Sekitar 10 - 15 menit untuk disiapkan setelah pesanan dibuat';
+                            return;
+                        }
+
+                        const warungLat = {{ $store_latitude }};
+                        const warungLon = {{ $store_longitude }};
+                        
+                        const userLat = position.coords.latitude;
+                        const userLon = position.coords.longitude;
+                        
+                        const R = 6371;
+                        const dLat = (userLat - warungLat) * Math.PI / 180;
+                        const dLon = (userLon - warungLon) * Math.PI / 180;
+                        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                                Math.cos(warungLat * Math.PI / 180) * Math.cos(userLat * Math.PI / 180) *
+                                Math.sin(dLon/2) * Math.sin(dLon/2);
+                        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                        const distanceKm = R * c;
+                        
+                        const travelTime = Math.ceil(distanceKm * 3);
+                        const prepTime = 10;
+                        const totalTime = travelTime + prepTime;
+                        
+                        textEl.textContent = `Sekitar ${totalTime} - ${totalTime + 15} menit setelah konfirmasi pembayaran`;
+                    },
+                    (error) => {
+                        const textEl = document.getElementById('checkoutDeliveryTimeText');
+                        if (textEl) textEl.textContent = 'Sekitar 20 - 35 menit setelah konfirmasi pembayaran';
+                    }
+                );
+            } else {
+                const textEl = document.getElementById('checkoutDeliveryTimeText');
+                if (textEl) textEl.textContent = 'Sekitar 20 - 35 menit setelah konfirmasi pembayaran';
+            }
+        }
+
         updateSummary();
+        
+        // Panggil estimasi waktu saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            calculateDeliveryTimeForCheckout();
+        });
     </script>
 
 @endsection
