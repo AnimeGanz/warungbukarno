@@ -59,20 +59,26 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-200 dark:divide-gray-800">
                 <div class="text-center px-4">
-                    <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">50+</p>
+                    <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">{{ $totalProducts }}+</p>
                     <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Menu Pilihan</p>
                 </div>
-                <div class="text-center px-4">
-                    <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">99%</p>
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Pelanggan Puas</p>
+                <div class="text-center px-4 flex flex-col justify-center">
+                    <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">
+                        {{ $averageRating > 0 ? round(($averageRating / 5) * 100) . '%' : '-' }}
+                    </p>
+                    <p class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">{{ $satisfactionText }}</p>
                 </div>
-                <div class="text-center px-4">
-                    <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">~20m</p>
-                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Estimasi Antar</p>
+                <div class="text-center px-4" id="deliveryEstimationContainer">
+                    <p class="text-3xl font-black text-gray-900 dark:text-white mb-1" id="deliveryTimeText">~20m</p>
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Estimasi Antar</p>
+                    <button onclick="calculateDeliveryTime()" class="text-[10px] text-orange-600 font-bold hover:underline bg-orange-100 dark:bg-orange-900/30 px-2.5 py-1 rounded-full inline-flex items-center gap-1 transition-all">
+                        <span>📍</span> Cek Jarak Saya
+                    </button>
                 </div>
                 <div class="text-center px-4">
                     <p class="text-3xl font-black text-gray-900 dark:text-white mb-1 flex items-center justify-center gap-1">
-                        4.9 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                        {{ $averageRating > 0 ? number_format($averageRating, 1) : '-' }} 
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                     </p>
                     <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rating Warung</p>
                 </div>
@@ -549,6 +555,57 @@
         document.getElementById('productReviewsModal').addEventListener('click', function(e) {
             if (e.target === this) closeProductReviewsModal();
         });
+
+        // Script Geolocation Estimasi Waktu Antar
+        function calculateDeliveryTime() {
+            const btn = document.querySelector('#deliveryEstimationContainer button');
+            const timeText = document.getElementById('deliveryTimeText');
+            
+            if (!navigator.geolocation) {
+                alert("Yah, Browser Anda tidak mendukung fitur lokasi.");
+                return;
+            }
+
+            btn.innerHTML = '<span class="w-3 h-3 rounded-full border-2 border-orange-500 border-t-transparent animate-spin inline-block"></span> Menghitung...';
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    // Koordinat Default Warung Bu Karno (Misal di Pusat Kota Jakarta)
+                    const warungLat = -6.200000;
+                    const warungLon = 106.816666;
+                    
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+                    
+                    // Rumus Haversine untuk hitung jarak lurus (Km)
+                    const R = 6371;
+                    const dLat = (userLat - warungLat) * Math.PI / 180;
+                    const dLon = (userLon - warungLon) * Math.PI / 180;
+                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                            Math.cos(warungLat * Math.PI / 180) * Math.cos(userLat * Math.PI / 180) *
+                            Math.sin(dLon/2) * Math.sin(dLon/2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                    const distanceKm = R * c;
+                    
+                    // Logika Waktu: 3 Menit per Km + 10 Menit Masak
+                    let estimasiMenit = Math.round((distanceKm * 3) + 10);
+                    
+                    if(estimasiMenit > 120) {
+                        timeText.innerText = ">2 Jam";
+                        timeText.classList.add('text-rose-500');
+                        btn.innerHTML = '<span>🚫</span> Terlalu Jauh';
+                    } else {
+                        timeText.innerText = "~" + estimasiMenit + "m";
+                        timeText.classList.add('text-green-500');
+                        btn.style.display = 'none'; // Sembunyikan kalau berhasil dekat
+                    }
+                },
+                (error) => {
+                    alert("Gagal mendapatkan lokasi. Pastikan GPS HP/Laptop Anda aktif dan diizinkan ya.");
+                    btn.innerHTML = '<span>📍</span> Coba Lagi';
+                }
+            );
+        }
     </script>
 
 @endsection
