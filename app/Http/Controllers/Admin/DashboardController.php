@@ -13,78 +13,73 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $today = now()->startOfDay();
-        $thisMonth = now()->startOfMonth();
+        // Cache seluruh data dashboard selama 15 menit agar tidak membebani database
+        $data = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_data', now()->addMinutes(15), function () {
+            $today = now()->startOfDay();
+            $thisMonth = now()->startOfMonth();
 
-        // Key Metrics
-        $totalOrders = Order::count();
-        $pendingOrders = Order::where('status', 'menunggu')->count();
-        $processingOrders = Order::whereIn('status', ['diproses', 'dikirim'])->count();
-        $completedOrders = Order::where('status', 'selesai')->count();
-
-        $todayRevenue = Order::whereDate('created_at', today())
-            ->where('status', '!=', 'dibatalkan')
-            ->sum('total_price');
-
-        $monthRevenue = Order::where('created_at', '>=', $thisMonth)
-            ->where('status', '!=', 'dibatalkan')
-            ->sum('total_price');
-
-        $totalProducts = Product::count();
-        $availableProducts = Product::where('is_available', true)->count();
-        $totalCategories = Category::count();
-        $activePromosCount = Promo::where('is_active', true)->count();
-
-        // 7-day Sales Chart Data
-        $salesData = collect(range(6, 0))->map(function ($daysAgo) {
-            $date = now()->subDays($daysAgo);
-            $total = Order::whereDate('created_at', $date)
+            // 1. Mengurangi 14 query pada loop 7-hari menjadi 1 query saja
+            $sevenDaysAgo = now()->subDays(6)->startOfDay();
+            $ordersLast7Days = Order::where('created_at', '>=', $sevenDaysAgo)
                 ->where('status', '!=', 'dibatalkan')
-                ->sum('total_price');
-            $count = Order::whereDate('created_at', $date)
-                ->where('status', '!=', 'dibatalkan')
-                ->count();
+                ->select('created_at', 'total_price')
+                ->get();
+
+            $salesData = collect(range(6, 0))->map(function ($daysAgo) use ($ordersLast7Days) {
+                $date = now()->subDays($daysAgo);
+                $dateString = $date->format('Y-m-d');
+                
+                $dayOrders = $ordersLast7Days->filter(function($order) use ($dateString) {
+                    return $order->created_at->format('Y-m-d') === $dateString;
+                });
+
+                return [
+                    'label' => $date->translatedFormat('d M'),
+                    'total' => (float) $dayOrders->sum('total_price'),
+                    'count' => $dayOrders->count(),
+                ];
+            });
+
+            // 2. Fetch metrics
             return [
-                'label' => $date->translatedFormat('d M'),
-                'total' => (float) $total,
-                'count' => $count,
+                'totalOrders' => Order::count(),
+                'pendingOrders' => Order::where('status', 'menunggu')->count(),
+                'processingOrders' => Order::whereIn('status', ['diproses', 'dikirim'])->count(),
+                'completedOrders' => Order::where('status', 'selesai')->count(),
+
+                'todayRevenue' => Order::whereDate('created_at', today())
+                    ->where('status', '!=', 'dibatalkan')
+                    ->sum('total_price'),
+
+                'monthRevenue' => Order::where('created_at', '>=', $thisMonth)
+                    ->where('status', '!=', 'dibatalkan')
+                    ->sum('total_price'),
+
+                'totalProducts' => Product::count(),
+                'availableProducts' => Product::where('is_available', true)->count(),
+                'totalCategories' => Category::count(),
+                'activePromosCount' => Promo::where('is_active', true)->count(),
+
+                'salesData' => $salesData,
+
+                'topCategories' => Category::withCount('products')
+                    ->orderByDesc('products_count')
+                    ->take(5)
+                    ->get(),
+
+                'recentOrders' => Order::with(['user', 'items'])
+                    ->latest()
+                    ->take(6)
+                    ->get(),
+
+                'promosSummary' => Promo::where('is_active', true)
+                    ->orderByDesc('used_count')
+                    ->take(3)
+                    ->get(),
             ];
         });
 
-        // Top Selling Categories
-        $topCategories = Category::withCount('products')
-            ->orderByDesc('products_count')
-            ->take(5)
-            ->get();
-
-        // Recent Orders with items and customer
-        $recentOrders = Order::with(['user', 'items'])
-            ->latest()
-            ->take(6)
-            ->get();
-
-        // Active Promos Quick Summary
-        $promosSummary = Promo::where('is_active', true)
-            ->orderByDesc('used_count')
-            ->take(3)
-            ->get();
-
-        return view('admin.dashboard', compact(
-            'totalOrders',
-            'pendingOrders',
-            'processingOrders',
-            'completedOrders',
-            'todayRevenue',
-            'monthRevenue',
-            'totalProducts',
-            'availableProducts',
-            'totalCategories',
-            'activePromosCount',
-            'salesData',
-            'topCategories',
-            'recentOrders',
-            'promosSummary'
-        ));
+        return view('admin.dashboard', $data);
     }
 
     public function toggleStoreStatus()
