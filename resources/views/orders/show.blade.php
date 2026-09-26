@@ -80,8 +80,13 @@
                 
                 <div class="mt-8 p-4 sm:p-5 rounded-2xl {{ $order->status === 'selesai' ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/50' : 'bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-800/50' }} text-center border shadow-inner">
                     @if ($order->status === 'menunggu')
-                        <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesanan Sedang Menunggu Konfirmasi</p>
-                        <p class="text-xs text-orange-600 dark:text-orange-500">Kami akan segera memproses pesananmu setelah pembayaran terkonfirmasi.</p>
+                        @if ($order->payment_method === 'cod')
+                            <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Menunggu Konfirmasi Warung ⏳</p>
+                            <p class="text-xs text-orange-600 dark:text-orange-500">Pesananmu sudah masuk. Admin kami akan segera memeriksa dan memprosesnya.</p>
+                        @else
+                            <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesanan Sedang Menunggu Pembayaran 💳</p>
+                            <p class="text-xs text-orange-600 dark:text-orange-500">Kami akan segera memproses pesananmu setelah pembayaran berhasil dikonfirmasi.</p>
+                        @endif
                     @elseif ($order->status === 'diproses')
                         <p class="text-sm font-bold text-orange-800 dark:text-orange-400 mb-1">Pesananmu Sedang Disiapkan! 🍳</p>
                         <p class="text-xs text-orange-600 dark:text-orange-500">Koki kami sedang memasak pesananmu dengan sepenuh hati.</p>
