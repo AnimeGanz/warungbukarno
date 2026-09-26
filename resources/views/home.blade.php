@@ -232,7 +232,7 @@
             {{-- Grid Produk --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                 @forelse ($products as $product)
-                    <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl dark:hover:shadow-gray-900 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between overflow-hidden relative">
+                    <div onclick="openProductDetailsModal({{ $product->id }}, '{{ addslashes($product->name) }}', '{{ $product->image ? Storage::url($product->image) : '' }}', '{{ addslashes($product->description) }}', {{ $product->price }}, {{ $product->stock ?? 0 }}, '{{ $product->category ? $product->category->name : '' }}')" class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl dark:hover:shadow-gray-900 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between overflow-hidden relative cursor-pointer">
                         
                         {{-- Tag Tersedia --}}
                         <div class="absolute top-3 left-3 z-10 flex gap-1.5">
@@ -265,7 +265,7 @@
                                     {{ $product->name }}
                                 </h3>
                                 @if($product->reviews_count > 0)
-                                    <button onclick="openProductReviewsModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="flex items-center gap-1 mb-2 hover:bg-orange-50 dark:hover:bg-gray-800 px-2 py-1 -ml-2 rounded-lg transition-colors text-left">
+                                    <button onclick="event.stopPropagation(); openProductReviewsModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="flex items-center gap-1 mb-2 hover:bg-orange-50 dark:hover:bg-gray-800 px-2 py-1 -ml-2 rounded-lg transition-colors text-left relative z-20">
                                         <span class="text-yellow-400 text-xs">★</span>
                                         <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ number_format($product->average_rating, 1) }}</span>
                                         <span class="text-[10px] text-gray-400 hover:text-orange-500 hover:underline">({{ $product->reviews_count }} ulasan)</span>
@@ -285,7 +285,7 @@
                                         Rp {{ number_format($product->price, 0, ',', '.') }}
                                     </span>
                                 </div>
-                                <form action="{{ route('cart.add', $product) }}" method="POST">
+                                <form action="{{ route('cart.add', $product) }}" method="POST" onclick="event.stopPropagation();" class="relative z-20">
                                     @csrf
                                     <button type="submit" 
                                             class="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white hover:bg-orange-500 dark:hover:bg-orange-500 text-white dark:text-gray-900 hover:text-white flex items-center justify-center transition-colors duration-300 shadow-md hover:shadow-orange-500/30"
@@ -355,6 +355,57 @@
                 <div class="flex justify-center items-center h-32">
                     <span class="w-8 h-8 rounded-full border-4 border-orange-500 border-t-transparent animate-spin"></span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Product Details Modal (Popup Info Makanan) --}}
+    <div id="productDetailsModal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm hidden items-center justify-center z-[60] px-4 transition-all opacity-0">
+        <div class="bg-white dark:bg-gray-900 rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden transform transition-transform scale-95 duration-300 ease-out" id="productDetailsContent">
+            
+            {{-- Tombol Close X --}}
+            <button onclick="closeProductDetailsModal()" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            {{-- Gambar Header --}}
+            <div class="relative h-64 w-full bg-gray-100 dark:bg-gray-800">
+                <img id="modalDetailImage" src="" alt="Menu Image" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-transparent to-transparent"></div>
+                <div class="absolute bottom-4 left-6">
+                    <span id="modalDetailCategory" class="bg-white/20 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full shadow-sm border border-white/30 uppercase tracking-wider">Kategori</span>
+                </div>
+            </div>
+
+            {{-- Detail Info --}}
+            <div class="p-6">
+                <h3 id="modalDetailName" class="text-2xl font-black text-gray-900 dark:text-white mb-2 leading-tight">Nama Menu</h3>
+                
+                <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 dark:border-gray-800">
+                    <span id="modalDetailPrice" class="font-black text-orange-600 text-3xl">Rp 0</span>
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Sisa Stok</span>
+                        <span id="modalDetailStock" class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-extrabold px-3 py-1 rounded-lg">0 Porsi</span>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-2">Deskripsi Menu:</h4>
+                    <p id="modalDetailDescription" class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed min-h-[60px]">Tidak ada deskripsi.</p>
+                </div>
+
+                {{-- Add to Cart Form di dalam Modal --}}
+                <form id="modalDetailForm" method="POST" action="">
+                    @csrf
+                    <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-extrabold py-4 rounded-xl shadow-lg shadow-orange-500/30 transition-all hover:-translate-y-1 flex justify-center items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Pesan Sekarang
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -438,6 +489,66 @@
                 modal.classList.remove('flex');
             }, 200);
         }
+
+        // Script Modal Detail Produk
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+        }
+
+        function openProductDetailsModal(id, name, image, description, price, stock, category) {
+            document.getElementById('modalDetailName').innerText = name;
+            document.getElementById('modalDetailDescription').innerText = description || 'Tidak ada deskripsi untuk menu ini.';
+            document.getElementById('modalDetailPrice').innerText = formatRupiah(price);
+            document.getElementById('modalDetailStock').innerText = stock + ' Porsi';
+            document.getElementById('modalDetailCategory').innerText = category || 'Menu';
+            
+            const imageEl = document.getElementById('modalDetailImage');
+            if(image) {
+                imageEl.src = image;
+                imageEl.classList.remove('hidden');
+            } else {
+                imageEl.src = 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=2000'; // Default placeholder
+            }
+
+            // Update action URL form keranjang
+            const form = document.getElementById('modalDetailForm');
+            form.action = `/cart/add/${id}`;
+
+            const modal = document.getElementById('productDetailsModal');
+            const content = document.getElementById('productDetailsContent');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Animasi masuk (Scale & Opacity)
+            setTimeout(() => { 
+                modal.classList.remove('opacity-0'); 
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeProductDetailsModal() {
+            const modal = document.getElementById('productDetailsModal');
+            const content = document.getElementById('productDetailsContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // Close modal jika ngeklik di luar area konten modal
+        document.getElementById('productDetailsModal').addEventListener('click', function(e) {
+            if (e.target === this) closeProductDetailsModal();
+        });
+        document.getElementById('productReviewsModal').addEventListener('click', function(e) {
+            if (e.target === this) closeProductReviewsModal();
+        });
     </script>
 
 @endsection

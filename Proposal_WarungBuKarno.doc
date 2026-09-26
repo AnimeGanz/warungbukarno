@@ -1,0 +1,108 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Proposal Perencanaan Biaya</title>
+<style>
+    body { font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.5; }
+    h1, h2 { text-align: center; }
+    h1 { font-size: 16pt; margin-bottom: 0; }
+    h2 { font-size: 14pt; margin-top: 5px; color: #d97706; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 25px; }
+    table, th, td { border: 1px solid black; }
+    th { padding: 10px; text-align: center; background-color: #f3f4f6; }
+    td { padding: 8px; text-align: center; vertical-align: middle; }
+    .text-left { text-align: left; }
+    .bold { font-weight: bold; }
+    .header-box { text-align: left; margin-bottom: 30px; }
+    .total-row { background-color: #fdf6e3; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+    <p>Nama : ..........................................</p>
+    <p>Kelas : ..........................................</p>
+    <p>Absen : ..........................................</p>
+</div>
+
+<h1>RENCANA ANGGARAN BIAYA (RAB) OPERASIONAL</h1>
+<h2>WEBSITE WARUNGBUKARNO</h2>
+
+<p>Berikut adalah rincian estimasi biaya operasional per bulan untuk menjaga website <strong>WarungBuKarno</strong> tetap online dan dapat memproses pesanan pelanggan secara otomatis.</p>
+
+<p><strong>A. Biaya Infrastruktur & Server (Tetap per Bulan)</strong></p>
+<table>
+    <tr>
+        <th width="5%">No</th>
+        <th width="25%">Komponen</th>
+        <th width="50%">Fungsi & Keterangan</th>
+        <th width="20%">Perkiraan Biaya</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td class="text-left"><strong>Cloud Server (Railway)</strong></td>
+        <td class="text-left">Tempat menjalankan aplikasi web (Laravel) dan Database (PostgreSQL) agar website bisa diakses 24 jam.</td>
+        <td>Rp 80.000,00</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td class="text-left"><strong>Domain Resmi</strong></td>
+        <td class="text-left">Sewa nama alamat website (contoh: <i>warungbukarno.com</i>). Harga tahunan Rp180.000 dihitung pro-rata bulanan.</td>
+        <td>Rp 15.000,00</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td class="text-left"><strong>Penyimpanan (Cloud S3)</strong></td>
+        <td class="text-left">Tempat menyimpan file foto menu masakan dan struk bukti transfer.</td>
+        <td>Rp 20.000,00</td>
+    </tr>
+    <tr class="total-row">
+        <td colspan="3" class="text-left">Sub-Total Biaya Infrastruktur</td>
+        <td>Rp 115.000,00</td>
+    </tr>
+</table>
+
+<p><strong>B. Biaya Operasional & Pihak Ketiga (Bervariasi)</strong></p>
+<table>
+    <tr>
+        <th width="5%">No</th>
+        <th width="25%">Komponen</th>
+        <th width="50%">Fungsi & Keterangan</th>
+        <th width="20%">Perkiraan Biaya</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td class="text-left"><strong>Midtrans (Payment Gateway)</strong></td>
+        <td class="text-left">Biaya admin otomatis untuk sistem pembayaran QRIS & Virtual Account. (Asumsi 50 pesanan/bulan).</td>
+        <td>Rp 100.000,00</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td class="text-left"><strong>Maintenance Website</strong></td>
+        <td class="text-left">Biaya jasa pengecekan keamanan, pemantauan sistem, dan perbaikan jika ada <i>error/bug</i>.</td>
+        <td>Rp 150.000,00</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td class="text-left"><strong>Internet & Komunikasi</strong></td>
+        <td class="text-left">Kuota internet admin untuk memantau pesanan yang masuk melalui dashboard setiap harinya.</td>
+        <td>Rp 50.000,00</td>
+    </tr>
+    <tr class="total-row">
+        <td colspan="3" class="text-left">Sub-Total Biaya Operasional</td>
+        <td>Rp 300.000,00</td>
+    </tr>
+</table>
+
+<br>
+<table>
+    <tr>
+        <td class="text-left bold" style="font-size: 14pt; padding: 15px;">TOTAL ESTIMASI PENGELUARAN PER BULAN (A + B)</td>
+        <td class="bold" style="font-size: 14pt; background-color: #fff3cd; color: #856404; width: 30%;">Rp 415.000,00</td>
+    </tr>
+</table>
+
+</body>
+</html>
