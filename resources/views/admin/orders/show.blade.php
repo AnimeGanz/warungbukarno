@@ -66,8 +66,21 @@
             </div>
 
             <div class="bg-[#161922] border border-white/5 rounded-2xl p-6">
-                <h4 class="text-white font-medium mb-2">Alamat Pengiriman</h4>
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-white font-medium">Alamat Pengiriman</h4>
+                    <span class="text-xs px-2 py-1 rounded {{ $order->delivery_method === 'delivery' ? 'bg-orange-500/20 text-orange-400' : 'bg-gray-500/20 text-gray-400' }}">
+                        {{ $order->delivery_method === 'delivery' ? 'Antar ke Rumah' : 'Ambil di Tempat' }}
+                    </span>
+                </div>
                 <p class="text-sm text-gray-400">{{ $order->shipping_address }}</p>
+                @if ($order->delivery_method === 'delivery')
+                    <div class="mt-3">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($order->shipping_address) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-1.5 rounded-lg transition border border-white/10">
+                            🗺️ Buka di Google Maps
+                        </a>
+                    </div>
+                @endif
+                
                 @if ($order->notes)
                     <h4 class="text-white font-medium mt-4 mb-2">Catatan</h4>
                     <p class="text-sm text-gray-400">{{ $order->notes }}</p>
@@ -77,7 +90,7 @@
             <div class="bg-[#161922] border border-white/5 rounded-2xl p-6">
                 <h4 class="text-white font-medium mb-2">Pembayaran</h4>
                 <p class="text-sm text-gray-400 mb-3">
-                    Metode: {{ $order->payment_method === 'cod' ? 'Bayar di Tempat (COD)' : 'Transfer Bank' }}
+                    Metode: <strong class="text-white">{{ $order->payment_method === 'cod' ? 'Bayar di Tempat (COD)' : ($order->payment_method === 'bank_transfer' ? 'Virtual Account / Transfer' : ($order->payment_method === 'ewallet' ? 'E-Wallet (GoPay/DANA)' : 'Lainnya')) }}</strong>
                 </p>
                 @if ($order->payment_proof)
                     <img src="{{ Storage::url($order->payment_proof) }}" class="w-48 rounded-lg border border-white/10">
