@@ -512,7 +512,7 @@
 
             // Update action URL form keranjang
             const form = document.getElementById('modalDetailForm');
-            form.action = `/cart/add/${id}`;
+            form.action = `/cart/${id}`;
 
             const modal = document.getElementById('productDetailsModal');
             const content = document.getElementById('productDetailsContent');
