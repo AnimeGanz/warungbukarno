@@ -54,28 +54,16 @@
                     Daftar akunmu sekarang dalam hitungan detik dan dapatkan voucher <strong>Diskon 20% (Kode: BARU20)</strong> untuk pesanan pertamamu!
                 </p>
 
-                {{-- Promo Highlight Box --}}
-                <div class="p-4 rounded-2xl bg-gradient-to-r from-orange-500/20 to-amber-500/10 backdrop-blur-md border border-orange-500/30 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold text-lg shadow-md">
-                            🏷️
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-white uppercase tracking-wide">Kupon Diskon 20%</p>
-                            <p class="text-xs text-orange-200">Gunakan kode: <strong class="font-mono text-white">BARU20</strong> saat checkout</p>
-                        </div>
-                    </div>
-                    <span class="text-xs bg-white text-orange-600 font-bold px-2.5 py-1 rounded-lg shadow-sm">Klaim</span>
-                </div>
+
             </div>
 
             {{-- Bottom Customer Testimonial Pill --}}
-            <div class="relative z-10 p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-between text-xs text-gray-300">
+            <div class="relative z-10 p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-between text-xs text-gray-300 transition-all duration-500" id="testimonial-container">
                 <div class="flex items-center gap-2">
                     <div class="flex text-amber-400">★★★★★</div>
-                    <span>"Porsi banyak, lauknya komplit, Hidup Jokowi"</span>
+                    <span id="testimonial-comment" class="transition-opacity duration-500">"Porsi banyak, lauknya komplit, mantap!"</span>
                 </div>
-                <span class="text-gray-400 font-medium">PrabowoSubianto✔️, Jakarta</span>
+                <span id="testimonial-author" class="text-gray-400 font-medium transition-opacity duration-500">PrabowoSubianto✔️, Jakarta</span>
             </div>
         </div>
 
@@ -253,6 +241,38 @@
                 closedIcon.classList.add('hidden');
             }
         }
+
+        // Testimonial Rotation
+        document.addEventListener('DOMContentLoaded', function() {
+            const testimonials = [
+                { name: 'PrabowoSubianto✔️', comment: '"Porsi banyak, lauknya komplit, mantap!"', location: 'Jakarta' },
+                { name: 'Purbaya✔️', comment: '"Warung langganan, rasanya selalu pas di lidah."', location: 'Bandung' },
+                { name: 'Jokowi✔️', comment: '"Harganya terjangkau, pelayanannya sangat cepat."', location: 'Solo' },
+                { name: 'Megawati✔️', comment: '"Makanannya enak, bumbunya terasa sekali."', location: 'Jakarta' },
+            ];
+            
+            let currentTestimonial = 0;
+            const commentEl = document.getElementById('testimonial-comment');
+            const authorEl = document.getElementById('testimonial-author');
+            
+            setInterval(() => {
+                currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+                
+                // Fade out
+                commentEl.style.opacity = 0;
+                authorEl.style.opacity = 0;
+                
+                setTimeout(() => {
+                    // Update content
+                    commentEl.innerText = testimonials[currentTestimonial].comment;
+                    authorEl.innerText = testimonials[currentTestimonial].name + ', ' + testimonials[currentTestimonial].location;
+                    
+                    // Fade in
+                    commentEl.style.opacity = 1;
+                    authorEl.style.opacity = 1;
+                }, 500); // Wait for fade out to complete (matching duration-500)
+            }, 5000); // Change every 5 seconds
+        });
     </script>
 
 </body>
