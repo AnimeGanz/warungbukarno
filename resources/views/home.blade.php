@@ -241,10 +241,15 @@
                     <div onclick="openProductDetailsModal({{ $product->id }}, '{{ addslashes($product->name) }}', '{{ $product->image ? Storage::url($product->image) : '' }}', '{{ addslashes($product->description) }}', {{ $product->price }}, {{ $product->stock ?? 0 }}, '{{ $product->category ? $product->category->name : '' }}')" class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl dark:hover:shadow-gray-900 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between overflow-hidden relative cursor-pointer">
                         
                         {{-- Tag Tersedia --}}
-                        <div class="absolute top-3 left-3 z-10 flex gap-1.5">
+                        <div class="absolute top-3 left-3 z-10 flex flex-wrap gap-1.5">
                             @if ($product->category)
                                 <span class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md text-gray-900 dark:text-gray-100 text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm border dark:border-gray-700">
                                     {{ $product->category->name }}
+                                </span>
+                            @endif
+                            @if ($product->is_recommended)
+                                <span class="bg-orange-500/90 backdrop-blur-md text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm border border-orange-400 flex items-center gap-1">
+                                    <span>⭐</span> Paling Disukai
                                 </span>
                             @endif
                         </div>
