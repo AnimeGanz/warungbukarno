@@ -60,7 +60,7 @@
             {{-- Bottom Customer Testimonial Pill --}}
             <div class="relative z-10 p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-between text-xs text-gray-300 transition-all duration-500" id="testimonial-container">
                 <div class="flex items-center gap-2">
-                    <div class="flex text-amber-400">★★★★★</div>
+                    <div class="flex text-amber-400 font-medium transition-opacity duration-500" id="testimonial-stars">★★★★★ 5.0</div>
                     <span id="testimonial-comment" class="transition-opacity duration-500">"Porsi banyak, lauknya komplit, mantap!"</span>
                 </div>
                 <span id="testimonial-author" class="text-gray-400 font-medium transition-opacity duration-500">PrabowoSubianto✔️, Jakarta</span>
@@ -245,15 +245,16 @@
         // Testimonial Rotation
         document.addEventListener('DOMContentLoaded', function() {
             const testimonials = [
-                { name: 'PrabowoSubianto✔️', comment: '"Porsi banyak, lauknya komplit, mantap!"', location: 'Jakarta' },
-                { name: 'Purbaya✔️', comment: '"Warung langganan, rasanya selalu pas di lidah."', location: 'Bandung' },
-                { name: 'Jokowi✔️', comment: '"Harganya terjangkau, pelayanannya sangat cepat."', location: 'Solo' },
-                { name: 'Megawati✔️', comment: '"Makanannya enak, bumbunya terasa sekali."', location: 'Jakarta' },
+                { name: 'PrabowoSubianto✔️', comment: '"Porsi banyak, lauknya komplit, mantap!"', location: 'Jakarta', stars: '★★★★★ 5.0' },
+                { name: 'Purbaya✔️', comment: '"Warung langganan, rasanya selalu pas di lidah."', location: 'Bandung', stars: '★★★★☆ 4.0' },
+                { name: 'Jokowi✔️', comment: '"Harganya terjangkau, pelayanannya sangat cepat."', location: 'Solo', stars: '★★★★½ 4.5' },
+                { name: 'Megawati✔️', comment: '"Makanannya enak, bumbunya terasa sekali."', location: 'Jakarta', stars: '★★★★★ 5.0' },
             ];
             
             let currentTestimonial = 0;
             const commentEl = document.getElementById('testimonial-comment');
             const authorEl = document.getElementById('testimonial-author');
+            const starsEl = document.getElementById('testimonial-stars');
             
             setInterval(() => {
                 currentTestimonial = (currentTestimonial + 1) % testimonials.length;
@@ -261,15 +262,18 @@
                 // Fade out
                 commentEl.style.opacity = 0;
                 authorEl.style.opacity = 0;
+                starsEl.style.opacity = 0;
                 
                 setTimeout(() => {
                     // Update content
                     commentEl.innerText = testimonials[currentTestimonial].comment;
                     authorEl.innerText = testimonials[currentTestimonial].name + ', ' + testimonials[currentTestimonial].location;
+                    starsEl.innerText = testimonials[currentTestimonial].stars;
                     
                     // Fade in
                     commentEl.style.opacity = 1;
                     authorEl.style.opacity = 1;
+                    starsEl.style.opacity = 1;
                 }, 500); // Wait for fade out to complete (matching duration-500)
             }, 5000); // Change every 5 seconds
         });
