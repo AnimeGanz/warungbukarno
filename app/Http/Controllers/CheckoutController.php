@@ -91,6 +91,12 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index');
         }
 
+        foreach ($cartItems as $item) {
+            if ($item->product->stock < $item->quantity) {
+                return back()->with('error', 'Stok produk ' . $item->product->name . ' tidak mencukupi (sisa: ' . $item->product->stock . ').')->withInput();
+            }
+        }
+
         $subtotal = $cartItems->sum(fn ($item) => $item->product->price * $item->quantity);
 
         if ($validated['delivery_method'] === 'delivery' && $subtotal < 20000) {
@@ -160,6 +166,8 @@ class CheckoutController extends Controller
                     'quantity' => $item->quantity,
                     'subtotal' => $item->product->price * $item->quantity,
                 ]);
+
+                $item->product->decrement('stock', $item->quantity);
             }
 
             if (in_array($order->payment_method, ['bank_transfer', 'ewallet'])) {

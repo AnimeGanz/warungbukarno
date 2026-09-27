@@ -33,6 +33,20 @@ class OrderController extends Controller
             'status' => 'required|in:menunggu,diproses,dikirim,selesai,dibatalkan',
         ]);
 
+        if ($validated['status'] === 'dibatalkan' && $order->status !== 'dibatalkan') {
+            foreach ($order->items as $item) {
+                if ($item->product) {
+                    $item->product->increment('stock', $item->quantity);
+                }
+            }
+        } elseif ($order->status === 'dibatalkan' && $validated['status'] !== 'dibatalkan') {
+            foreach ($order->items as $item) {
+                if ($item->product) {
+                    $item->product->decrement('stock', $item->quantity);
+                }
+            }
+        }
+
         $order->update($validated);
 
         return back()->with('success', 'Status pesanan berhasil diperbarui.');
