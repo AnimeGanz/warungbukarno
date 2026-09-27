@@ -18,11 +18,13 @@ class Product extends Model
         'image',
         'stock',
         'is_available',
+        'is_recommended',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'is_available' => 'boolean',
+        'is_recommended' => 'boolean',
     ];
 
     public function category(): BelongsTo

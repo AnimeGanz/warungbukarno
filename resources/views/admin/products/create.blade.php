@@ -44,6 +44,15 @@
                     </label>
                     <p class="text-xs text-gray-600 mt-1 ml-6">Produk langsung bisa dipesan pembeli</p>
                 </div>
+
+                <div class="bg-[#161922] border border-white/5 rounded-2xl p-5">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="is_recommended" value="1"
+                               class="rounded bg-white/5 border-white/10 text-orange-500 focus:ring-orange-400 w-4 h-4">
+                        <span class="text-sm font-medium text-gray-300">Menu Rekomendasi</span>
+                    </label>
+                    <p class="text-xs text-gray-600 mt-1 ml-6">Tandai sebagai menu yang paling disukai / direkomendasikan</p>
+                </div>
             </div>
 
             {{-- Kolom kanan: detail produk --}}

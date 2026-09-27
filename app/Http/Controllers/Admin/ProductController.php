@@ -34,6 +34,7 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|max:2048',
             'is_available' => 'boolean',
+            'is_recommended' => 'boolean',
         ]);
 
         if ($request->hasFile('image')) {
@@ -41,6 +42,7 @@ class ProductController extends Controller
         }
 
         $validated['is_available'] = $request->boolean('is_available');
+        $validated['is_recommended'] = $request->boolean('is_recommended');
 
         Product::create($validated);
 
@@ -64,6 +66,7 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|max:2048',
             'is_available' => 'boolean',
+            'is_recommended' => 'boolean',
         ]);
 
         if ($request->hasFile('image')) {
@@ -74,6 +77,7 @@ class ProductController extends Controller
         }
 
         $validated['is_available'] = $request->boolean('is_available');
+        $validated['is_recommended'] = $request->boolean('is_recommended');
 
         $product->update($validated);
 
