@@ -80,12 +80,12 @@
             </div>
 
             {{-- Bottom Customer Testimonial Pill --}}
-            <div class="relative z-10 p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-between text-xs text-gray-300">
+            <div class="relative z-10 p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-between text-xs text-gray-300 transition-all duration-500" id="login-testimonial-container">
                 <div class="flex items-center gap-2">
-                    <div class="flex text-amber-400">★★★★★</div>
-                    <span>"Soto Nya Enak, Bumbu Nya Juga enak , Tadi saya hampir terbang"</span>
+                    <div class="flex text-amber-400 font-medium transition-opacity duration-500" id="login-testimonial-stars">★★★★★ 5.0</div>
+                    <span id="login-testimonial-comment" class="transition-opacity duration-500">"Soto Nya Enak, Bumbu Nya Juga enak , Tadi saya hampir terbang"</span>
                 </div>
-                <span class="text-gray-400 font-medium">Jokowi✔️, Pelanggan Setia</span>
+                <span id="login-testimonial-author" class="text-gray-400 font-medium transition-opacity duration-500">Jokowi✔️, Pelanggan Setia</span>
             </div>
         </div>
 
@@ -244,6 +244,42 @@
                 closedIcon.classList.add('hidden');
             }
         }
+
+        // Testimonial Rotation with Stars
+        document.addEventListener('DOMContentLoaded', function() {
+            const testimonials = [
+                { name: 'PrabowoSubianto✔️', comment: '"Porsi banyak, lauknya komplit, mantap!"', location: 'Jakarta', stars: '★★★★★ 5.0' },
+                { name: 'Purbaya✔️', comment: '"Warung langganan, rasanya selalu pas di lidah."', location: 'Bandung', stars: '★★★★☆ 4.0' },
+                { name: 'Jokowi✔️', comment: '"Soto Nya Enak, Bumbu Nya Juga enak , Tadi saya hampir terbang"', location: 'Pelanggan Setia', stars: '★★★★½ 4.5' },
+                { name: 'Megawati✔️', comment: '"Makanannya enak, bumbunya terasa sekali."', location: 'Jakarta', stars: '★★★★★ 5.0' },
+            ];
+            
+            let currentTestimonial = 0;
+            const commentEl = document.getElementById('login-testimonial-comment');
+            const authorEl = document.getElementById('login-testimonial-author');
+            const starsEl = document.getElementById('login-testimonial-stars');
+            
+            setInterval(() => {
+                currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+                
+                // Fade out
+                commentEl.style.opacity = 0;
+                authorEl.style.opacity = 0;
+                starsEl.style.opacity = 0;
+                
+                setTimeout(() => {
+                    // Update content
+                    commentEl.innerText = testimonials[currentTestimonial].comment;
+                    authorEl.innerText = testimonials[currentTestimonial].name + ', ' + testimonials[currentTestimonial].location;
+                    starsEl.innerText = testimonials[currentTestimonial].stars;
+                    
+                    // Fade in
+                    commentEl.style.opacity = 1;
+                    authorEl.style.opacity = 1;
+                    starsEl.style.opacity = 1;
+                }, 500); // Wait for fade out to complete
+            }, 5000); // Change every 5 seconds
+        });
     </script>
 
 </body>
