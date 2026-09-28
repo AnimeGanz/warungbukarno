@@ -62,7 +62,12 @@
                                 </span>
                             </td>
                             <td class="px-6 py-3.5">
-                                @if ($product->is_available)
+                                @if ($product->stock <= 0)
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                        Stok Habis
+                                    </span>
+                                @elseif ($product->is_available)
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                                         Tersedia
@@ -70,7 +75,7 @@
                                 @else
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/5 text-gray-400 border border-white/10">
                                         <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
-                                        Habis
+                                        Disembunyikan
                                     </span>
                                 @endif
                             </td>
