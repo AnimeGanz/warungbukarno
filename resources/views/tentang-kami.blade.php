@@ -56,8 +56,8 @@
                     <h3 class="text-2xl font-black mb-1">WarungBuKarno</h3>
                     <p class="text-orange-100 text-xs font-bold uppercase tracking-widest mb-6">Enak • Murah • Bersahabat</p>
                     <div class="pt-6 border-t border-white/20 text-xs text-orange-100/90 font-medium space-y-1">
-                        <p>📍 Kebayoran Baru, Jakarta Selatan</p>
-                        <p>⏰ Setiap Hari: 09.00 - 21.00 WIB</p>
+                        <p>📍 Jawa Tengah, Semarang Tengah</p>
+                        <p>⏰ Senin - Sabtu: Jam 7.00 - 20.00 WIB</p>
                     </div>
                 </div>
             </div>
