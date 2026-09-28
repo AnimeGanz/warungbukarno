@@ -56,7 +56,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'edit', 'show']);
     Route::resource('promos', \App\Http\Controllers\Admin\PromoController::class);
     Route::patch('promos/{promo}/toggle', [\App\Http\Controllers\Admin\PromoController::class, 'toggle'])->name('promos.toggle');
-    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'destroy']);
+    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show']);
     Route::patch('orders/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
 
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'destroy']);
