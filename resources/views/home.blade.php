@@ -299,8 +299,9 @@
                                 <form action="{{ route('cart.add', $product) }}" method="POST" onclick="event.stopPropagation();" class="relative z-20">
                                     @csrf
                                     <button type="submit" 
-                                            class="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white hover:bg-orange-500 dark:hover:bg-orange-500 text-white dark:text-gray-900 hover:text-white flex items-center justify-center transition-colors duration-300 shadow-md hover:shadow-orange-500/30"
-                                            title="Tambah ke Keranjang">
+                                            @if($product->stock <= 0) disabled @endif
+                                            class="w-10 h-10 rounded-xl {{ $product->stock <= 0 ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-orange-500/30' }} flex items-center justify-center transition-colors duration-300"
+                                            title="{{ $product->stock <= 0 ? 'Habis Terjual' : 'Tambah ke Keranjang' }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                                         </svg>
