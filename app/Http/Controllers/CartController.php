@@ -56,13 +56,21 @@ class CartController extends Controller
             ->first();
 
         if ($cartItem) {
-            $cartItem->increment('quantity');
+            if ($cartItem->quantity < $product->stock) {
+                $cartItem->increment('quantity');
+            } else {
+                return back()->with('error', 'Stok tidak mencukupi untuk ditambah lagi.');
+            }
         } else {
-            CartItem::create([
-                'user_id' => auth()->id(),
-                'product_id' => $product->id,
-                'quantity' => 1,
-            ]);
+            if ($product->stock > 0) {
+                CartItem::create([
+                    'user_id' => auth()->id(),
+                    'product_id' => $product->id,
+                    'quantity' => 1,
+                ]);
+            } else {
+                return back()->with('error', 'Stok produk habis.');
+            }
         }
 
         return back()->with('success', $product->name . ' ditambahkan ke keranjang.');
@@ -72,7 +80,11 @@ class CartController extends Controller
     {
         $this->authorizeCartItem($cartItem);
 
-        $cartItem->increment('quantity');
+        if ($cartItem->quantity < $cartItem->product->stock) {
+            $cartItem->increment('quantity');
+        } else {
+            return back()->with('error', 'Maksimal stok tercapai.');
+        }
 
         return back();
     }

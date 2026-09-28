@@ -61,7 +61,10 @@
                                     <form action="{{ route('cart.increase', $item) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="w-7 h-7 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-bold transition">
+                                        <button type="submit" 
+                                                @if($item->quantity >= $item->product->stock) disabled @endif
+                                                class="w-7 h-7 rounded-full border {{ $item->quantity >= $item->product->stock ? 'border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400' }} flex items-center justify-center text-sm font-bold transition"
+                                                title="{{ $item->quantity >= $item->product->stock ? 'Stok maksimal' : 'Tambah' }}">
                                             +
                                         </button>
                                     </form>

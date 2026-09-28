@@ -87,11 +87,18 @@
                                     <span class="block text-[10px] text-emerald-400 font-normal">Diskon -Rp {{ number_format($order->discount_amount, 0, ',', '.') }}</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-right whitespace-nowrap">
+                            <td class="px-6 py-4 text-right whitespace-nowrap flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.orders.show', $order) }}"
                                    class="px-3 py-1.5 rounded-lg bg-white/[0.05] hover:bg-orange-500 hover:text-white text-gray-300 text-xs font-semibold transition inline-flex items-center gap-1">
                                     Detail
                                 </a>
+                                <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" onsubmit="return confirm('Hapus pesanan ini dari daftar?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white text-xs font-semibold transition inline-flex items-center gap-1 border border-red-500/20 hover:border-transparent">
+                                        Hapus
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @empty
