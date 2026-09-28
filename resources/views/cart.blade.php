@@ -55,9 +55,11 @@
                                             −
                                         </button>
                                     </form>
-
-                                    <span class="text-sm font-semibold w-5 text-center dark:text-white">{{ $item->quantity }}</span>
-
+                                    <form action="{{ route('cart.update', $item) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock }}" onchange="this.form.submit()" class="text-sm font-semibold w-12 text-center bg-transparent border-none focus:ring-0 dark:text-white p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                    </form>
                                     <form action="{{ route('cart.increase', $item) }}" method="POST">
                                         @csrf
                                         @method('PATCH')

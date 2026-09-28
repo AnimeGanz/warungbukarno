@@ -102,6 +102,25 @@ class CartController extends Controller
         return back();
     }
 
+    public function update(Request $request, CartItem $cartItem)
+    {
+        $this->authorizeCartItem($cartItem);
+
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $quantity = $validated['quantity'];
+        if ($quantity > $cartItem->product->stock) {
+            $quantity = $cartItem->product->stock;
+            session()->flash('error', 'Jumlah pesanan disesuaikan dengan sisa stok.');
+        }
+
+        $cartItem->update(['quantity' => $quantity]);
+
+        return back();
+    }
+
     public function remove(CartItem $cartItem)
     {
         $this->authorizeCartItem($cartItem);

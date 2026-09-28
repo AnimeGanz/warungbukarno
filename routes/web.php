@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/{product}', [\App\Http\Controllers\CartController::class, 'add'])->middleware('store.status')->name('cart.add');
     Route::patch('/cart/{cartItem}/increase', [\App\Http\Controllers\CartController::class, 'increase'])->name('cart.increase');
     Route::patch('/cart/{cartItem}/decrease', [\App\Http\Controllers\CartController::class, 'decrease'])->name('cart.decrease');
+    Route::patch('/cart/{cartItem}/update', [\App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{cartItem}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 
     Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->middleware('store.status')->name('checkout.index');
